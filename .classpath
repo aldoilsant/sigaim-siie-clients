@@ -24,5 +24,10 @@
 	<classpathentry kind="lib" path="lib/openehr-rm-core-1.0.2-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RM"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/axis.jar"/>
+	<classpathentry kind="lib" path="lib/javax.wsdl_1.6.2.v201012040545.jar"/>
+	<classpathentry kind="lib" path="lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.logging_1.1.1.v201101211721.jar"/>
+	<classpathentry kind="lib" path="lib/saaj.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
