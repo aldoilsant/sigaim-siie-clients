@@ -28,7 +28,6 @@ public class TestReportManagementService {
 
 	@Test
 	public void test() throws Exception {
-		OpenEHRDADLManager manager=new OpenEHRDADLManager();
 		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient();
 		HealthcareFacility newFacility=client.createHealthcareFacility("1");
 		System.out.println("New facility: "+newFacility.getIdentifier().getRoot()+" "+newFacility.getIdentifier().getExtension());

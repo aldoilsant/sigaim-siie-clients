@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+encoding//src/org/sigaim/siie/interfaces/IdentifiedReturnValue.java=UTF-8
+encoding//src/org/sigaim/siie/interfaces/eql/ReturnValueEQL.java=UTF-8
+encoding//src/org/sigaim/siie/interfaces/reportmanagement/ReturnValueCreateHealthcareFacility.java=UTF-8
+encoding//src/org/sigaim/siie/interfaces/reportmanagement/ReturnValueCreatePerformer.java=UTF-8
+encoding//src/org/sigaim/siie/interfaces/reportmanagement/ReturnValueCreateReport.java=UTF-8
+encoding//src/org/sigaim/siie/interfaces/reportmanagement/ReturnValueCreateSubjectOfCare.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE001EQLImpl.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE001EQLImplService.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE001EQLImplServiceLocator.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE001EQLImplSoapBindingStub.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE004ReportManagementImpl.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE004ReportManagementImplService.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE004ReportManagementImplServiceLocator.java=UTF-8
+encoding//src/org/sigaim/siie/ws/INTSIIE004ReportManagementImplSoapBindingStub.java=UTF-8

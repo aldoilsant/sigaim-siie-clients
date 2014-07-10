@@ -18,7 +18,7 @@ public interface IntSIIE004ReportManagementClient {
 	public Performer createPerformer(String requestId) throws RejectException;
 	public Composition createReport(
 			String requestId,
-			II subjectOfCareId,
+			II ehrId,
 			FunctionalRole composerId,
 			String audioData,
 			String textTranscription,
