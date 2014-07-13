@@ -3,6 +3,7 @@ package org.sigaim.siie.clients;
 import java.util.List;
 
 import org.sigaim.siie.iso13606.rm.Cluster;
+import org.sigaim.siie.iso13606.rm.Element;
 import org.sigaim.siie.iso13606.rm.HealthcareFacility;
 import org.sigaim.siie.iso13606.rm.II;
 import org.sigaim.siie.iso13606.rm.Performer;
@@ -16,5 +17,8 @@ public interface IntSIIE001EQLClient {
 	List<HealthcareFacility> getAllHealthcareFacilities() throws RejectException;
 	List<SubjectOfCare> getAllSubjectsOfCare() throws RejectException;
 	List<Performer> getAllPerformers() throws RejectException;
-	Cluster getConceptInformationForReportId(II reportId) throws RejectException ;
+	List<IntSIIEReportSummary> getAllReportSummaries() throws RejectException;
+	Cluster getConceptInformationForReportId(II reportId) throws RejectException;
+	boolean getUserExists(long userId) throws RejectException;
+	List<Element> getReportSoip(long reportId) throws RejectException;
 }
