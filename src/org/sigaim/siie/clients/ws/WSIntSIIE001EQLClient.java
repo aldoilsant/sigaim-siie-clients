@@ -95,7 +95,19 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			SEQLResultSet rs=this.query("", "SELECT e/all_healthcare_facilities FROM EHR SYSTEM e;");
 			ArrayList<HealthcareFacility> hfs=new ArrayList<HealthcareFacility>();
 			while(rs.nextRow()){
-				hfs.add((HealthcareFacility)this.referenceModelManager.bind(rs.getColumn(0)));
+				ContentObject co=rs.getColumn(0);
+				List<SingleAttributeObjectBlock> facilityBlocks=new ArrayList<SingleAttributeObjectBlock>();
+				if(co.getComplexObjectBlock() instanceof SingleAttributeObjectBlock) {
+					facilityBlocks.add((SingleAttributeObjectBlock)co.getComplexObjectBlock());
+				} else {
+					MultipleAttributeObjectBlock mb=(MultipleAttributeObjectBlock)co.getComplexObjectBlock();
+					for(KeyedObject ob : mb.getKeyObjects()) {
+						facilityBlocks.add((SingleAttributeObjectBlock)ob.getObject());
+					}
+				}
+				for(SingleAttributeObjectBlock sb : facilityBlocks) {
+					hfs.add((HealthcareFacility)this.referenceModelManager.bindSingleAttributeObjectBlock(sb));
+				}
 			}
 			return hfs;
 		} catch(RejectException e) {
@@ -109,6 +121,31 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	public List<SubjectOfCare> getAllSubjectsOfCare() throws RejectException {
 		try {
 			SEQLResultSet rs=this.query("", "SELECT e/all_subjects_of_care FROM EHR SYSTEM e;");
+			ArrayList<SubjectOfCare> subjects=new ArrayList<SubjectOfCare>();
+			while(rs.nextRow()){
+				ContentObject co=rs.getColumn(0);
+				List<SingleAttributeObjectBlock> facilityBlocks=new ArrayList<SingleAttributeObjectBlock>();
+				if(co.getComplexObjectBlock() instanceof SingleAttributeObjectBlock) {
+					facilityBlocks.add((SingleAttributeObjectBlock)co.getComplexObjectBlock());
+				} else {
+					MultipleAttributeObjectBlock mb=(MultipleAttributeObjectBlock)co.getComplexObjectBlock();
+					for(KeyedObject ob : mb.getKeyObjects()) {
+						facilityBlocks.add((SingleAttributeObjectBlock)ob.getObject());
+					}
+				}
+				for(SingleAttributeObjectBlock sb : facilityBlocks) {
+					subjects.add((SubjectOfCare)this.referenceModelManager.bindSingleAttributeObjectBlock(sb));
+				}
+			}
+			return subjects;
+		} catch(RejectException e) {
+			throw e;
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RejectException("",CSReason.REAS02);
+		}
+		/*try {
+			SEQLResultSet rs=this.query("", "SELECT e/all_subjects_of_care FROM EHR SYSTEM e;");
 			ArrayList<SubjectOfCare> hfs=new ArrayList<SubjectOfCare>();
 			while(rs.nextRow()){
 				hfs.add((SubjectOfCare)this.referenceModelManager.bind(rs.getColumn(0)));
@@ -119,11 +156,36 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RejectException("",CSReason.REAS02);
-		}
+		}*/
 	}
 	@Override
 	public List<Performer> getAllPerformers() throws RejectException {
 		try {
+			SEQLResultSet rs=this.query("", "SELECT e/all_performers FROM EHR SYSTEM e;");
+			ArrayList<Performer> performers=new ArrayList<Performer>();
+			while(rs.nextRow()){
+				ContentObject co=rs.getColumn(0);
+				List<SingleAttributeObjectBlock> facilityBlocks=new ArrayList<SingleAttributeObjectBlock>();
+				if(co.getComplexObjectBlock() instanceof SingleAttributeObjectBlock) {
+					facilityBlocks.add((SingleAttributeObjectBlock)co.getComplexObjectBlock());
+				} else {
+					MultipleAttributeObjectBlock mb=(MultipleAttributeObjectBlock)co.getComplexObjectBlock();
+					for(KeyedObject ob : mb.getKeyObjects()) {
+						facilityBlocks.add((SingleAttributeObjectBlock)ob.getObject());
+					}
+				}
+				for(SingleAttributeObjectBlock sb : facilityBlocks) {
+					performers.add((Performer)this.referenceModelManager.bindSingleAttributeObjectBlock(sb));
+				}
+			}
+			return performers;
+		} catch(RejectException e) {
+			throw e;
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RejectException("",CSReason.REAS02);
+		}
+		/*try {
 			SEQLResultSet rs=this.query("", "SELECT e/all_performers FROM EHR SYSTEM e;");
 			ArrayList<Performer> hfs=new ArrayList<Performer>();
 			while(rs.nextRow()){
@@ -135,7 +197,8 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RejectException("",CSReason.REAS02);
-		}
+		}*/
+		
 	}
 	@Override
 	public Cluster getConceptInformationForReportId(II reportId) throws RejectException  {
@@ -201,7 +264,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	public List<Element> getReportSoip(long reportId) throws RejectException {
 		ArrayList<Element> rtn = new ArrayList<Element>();
 		try {
-			//SELECT  r/items[at0002]/parts[at0003] FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension=9:
+			//SELECT r/items[at0002]/parts[at0003] FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1];
 			SEQLResultSet rs = this.query("","SELECT  r/items[at0002]/parts[at0003], r/items[at0002]/parts[at0004], r/items[at0002]/parts[at0005], r/items[at0002]/parts[at0006] "
 					+ "FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1] "
 					+ "WHERE c/rc_id/extension="+reportId+";");
