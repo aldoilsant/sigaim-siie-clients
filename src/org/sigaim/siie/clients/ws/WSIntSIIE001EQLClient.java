@@ -218,6 +218,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			throw new RejectException("",CSReason.REAS02);
 		}
 	}
+	//FIXME: should return II of user
 	public boolean getUserExists(long userId) throws RejectException {
 		try {
 			SEQLResultSet rs = this.query("getUserExists", "SELECT p/identifier FROM EHR SYSTEM e CONTAINS PERFORMER p WHERE p/identifier/extension="+userId+";");
@@ -278,6 +279,21 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			throw new RejectException(e.getMessage(), CSReason.REAS02);
 		}
 		return rtn;
+	}
+	@Override
+	public II getEHRIdFromSubject(long subjectId) throws RejectException {
+		try {
+			SEQLResultSet rs=this.query("", "SELECT e/ehr_id FROM EHR e WHERE e/subject_of_care/extension="+subjectId+";");
+			if(rs.nextRow()){
+				return (II)this.referenceModelManager.bind(rs.getColumn(0));
+			}		
+			return null;
+		} catch(RejectException e) {
+			throw e;
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RejectException("",CSReason.REAS02);
+		}
 	}
 
 }

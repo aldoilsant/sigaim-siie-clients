@@ -21,4 +21,5 @@ public interface IntSIIE001EQLClient {
 	Cluster getConceptInformationForReportId(II reportId) throws RejectException;
 	boolean getUserExists(long userId) throws RejectException;
 	List<Element> getReportSoip(long reportId) throws RejectException;
+	II getEHRIdFromSubject(long subjectId) throws RejectException;
 }
