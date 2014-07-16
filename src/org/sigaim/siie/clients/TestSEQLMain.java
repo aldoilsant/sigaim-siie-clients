@@ -14,7 +14,6 @@ import org.sigaim.siie.seql.model.SEQLResultSet;
 
 public class TestSEQLMain {
 	public static void main(String[] args) {
-		WSIntSIIE004ReportManagementClient client;
 		WSIntSIIE001EQLClient eqlClient;
 		String query;
 		
@@ -22,11 +21,9 @@ public class TestSEQLMain {
 
 		if(args.length==2) {
 			//http://localhost:8080/SIIEWS/services/INTSIIE001EQLImpl
-			client=new WSIntSIIE004ReportManagementClient(args[0]);
 			eqlClient=new WSIntSIIE001EQLClient(args[0]);
 			query=args[1];
 		} else if(args.length==1) {
-			client=new WSIntSIIE004ReportManagementClient();
 			eqlClient=new WSIntSIIE001EQLClient();
 			query=args[0];
 		} else {
