@@ -2,6 +2,8 @@ package org.sigaim.siie.clients.ws.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Timer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,6 @@ public class TestReportManagementService {
 		CDCV reportStatus=new CDCV();
 		reportStatus.setCode("RSTA02");
 		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "", "some text", reportStatus, rootArchetypeId);
-		System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());	
+		System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 	}
 }
