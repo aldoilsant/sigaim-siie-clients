@@ -20,15 +20,15 @@ public class TestMain {
 
 		OpenEHRDADLManager manager=new OpenEHRDADLManager();
 
-		if(args.length==1) {
+		if(args.length==2) {
 			//http://localhost:8080/SIIEWS/services/INTSIIE001EQLImpl
 			client=new WSIntSIIE004ReportManagementClient(args[0]);
-			eqlClient=new WSIntSIIE001EQLClient(args[0]);
+			eqlClient=new WSIntSIIE001EQLClient(args[1]);
 		} else if(args.length==0) {
 			client=new WSIntSIIE004ReportManagementClient();
 			eqlClient=new WSIntSIIE001EQLClient();
 		} else {
-			System.err.println("Expected 0 parameters (connection to localhost:8080) or 1 parameter (endpoint url, like http://localhost:8080/SIIEWS/services/INTSIIE004ReportManagementImpl)");
+			System.err.println("Expected 0 parameters (connection to localhost:8080) or 2 parameters with the endpoint urls (by default,  http://localhost:8080/SIIEWS/services/INTSIIE004ReportManagementImpl  http://localhost:8080/SIIEWS/services/INTSIIE001EQLImpl)");
 			return;
 		}
 		try{
