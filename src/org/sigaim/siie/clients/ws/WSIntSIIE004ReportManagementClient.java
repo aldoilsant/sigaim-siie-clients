@@ -33,7 +33,14 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 	private ReferenceModelManager referenceModelManager;
 	
 	public WSIntSIIE004ReportManagementClient() {
-		this.proxy=new INTSIIE004ReportManagementImplProxy();
+		this(null);
+	}
+	public WSIntSIIE004ReportManagementClient(String endpoint) {
+		if(endpoint==null) {
+			this.proxy=new INTSIIE004ReportManagementImplProxy();
+		} else {
+			this.proxy=new INTSIIE004ReportManagementImplProxy(endpoint);
+		}
 		this.dadlManager=new OpenEHRDADLManager();
 		this.referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
 	}

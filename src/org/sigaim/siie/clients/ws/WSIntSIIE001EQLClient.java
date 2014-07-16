@@ -43,7 +43,14 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	private ReferenceModelManager referenceModelManager;
 	
 	public WSIntSIIE001EQLClient() {
-		this.proxy=new INTSIIE001EQLImplProxy();
+		this(null);
+	}
+	public WSIntSIIE001EQLClient(String endpoint) {
+		if(endpoint==null) {
+			this.proxy=new INTSIIE001EQLImplProxy();
+		} else {
+			this.proxy=new INTSIIE001EQLImplProxy(endpoint);
+		}
 		this.dadlManager=new OpenEHRDADLManager();
 		this.referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
 	}

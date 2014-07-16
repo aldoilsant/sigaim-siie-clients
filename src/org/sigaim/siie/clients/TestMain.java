@@ -12,7 +12,16 @@ import org.sigaim.siie.iso13606.rm.Performer;
 public class TestMain {
 	
 	public static void main(String[] args) {
-		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient();
+		WSIntSIIE004ReportManagementClient client;
+		if(args.length==1) {
+			//http://localhost:8080/SIIEWS/services/INTSIIE001EQLImpl
+			client=new WSIntSIIE004ReportManagementClient(args[0]);
+		} else if(args.length==0) {
+			client=new WSIntSIIE004ReportManagementClient();
+		} else {
+			System.err.println("Expected 0 parameters (connection to localhost:8080) or 1 parameter (endpoint url, like http://localhost:8080/SIIEWS/services/INTSIIE004ReportManagementImpl)");
+			return;
+		}
 		try{
 			HealthcareFacility newFacility=client.createHealthcareFacility("1");
 			System.out.println("New facility: "+newFacility.getIdentifier().getRoot()+" "+newFacility.getIdentifier().getExtension());
