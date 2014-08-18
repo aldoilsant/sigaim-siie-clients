@@ -44,7 +44,9 @@ public class TestSEQLWebService {
 		OpenEHRDADLManager manager=new OpenEHRDADLManager();
 		WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient();
 		/*List<HealthcareFacility> hfs=eqlClient.getAllHealthcareFacilities();
+
 		System.out.println("Total healtchare facilities: "+hfs.size());*/
+
 		II reportId=new II();
 		reportId.setExtension("6");
 		Cluster concepts=eqlClient.getConceptInformationForReportId(reportId);
@@ -60,6 +62,9 @@ public class TestSEQLWebService {
 				if(conceptPropertyElement.getValue() instanceof INT) {
 					INT intValue=(INT) conceptPropertyElement.getValue();
 					System.out.println(intValue.getValue());
+				} else if (conceptPropertyElement.getValue() instanceof CDCV) {
+					CDCV codeValue=(CDCV) conceptPropertyElement.getValue();
+					System.out.println(codeValue.getCode());
 				} else {
 					ST stringValue=(ST) conceptPropertyElement.getValue();
 					System.out.println(stringValue.getValue());
