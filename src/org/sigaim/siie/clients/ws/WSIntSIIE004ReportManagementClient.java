@@ -7,10 +7,6 @@ import org.openehr.am.parser.ContentObject;
 import org.sigaim.siie.clients.IntSIIE004ReportManagementClient;
 import org.sigaim.siie.dadl.DADLManager;
 import org.sigaim.siie.dadl.OpenEHRDADLManager;
-import org.sigaim.siie.interfaces.reportmanagement.ReturnValueCreateHealthcareFacility;
-import org.sigaim.siie.interfaces.reportmanagement.ReturnValueCreatePerformer;
-import org.sigaim.siie.interfaces.reportmanagement.ReturnValueCreateReport;
-import org.sigaim.siie.interfaces.reportmanagement.ReturnValueCreateSubjectOfCare;
 import org.sigaim.siie.iso13606.rm.CDCV;
 import org.sigaim.siie.iso13606.rm.Composition;
 import org.sigaim.siie.iso13606.rm.EHRExtract;
@@ -24,11 +20,21 @@ import org.sigaim.siie.rm.ReflectorReferenceModelManager;
 import org.sigaim.siie.rm.exceptions.CSReason;
 import org.sigaim.siie.rm.exceptions.ReferenceModelException;
 import org.sigaim.siie.rm.exceptions.RejectException;
-import org.sigaim.siie.ws.INTSIIE004ReportManagementImplProxy;
+import org.sigaim.siie.ws2.INTSIIE001EQLImplServiceStub;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub;
+import org.sigaim.siie.ws2.INTSIIE001EQLImplServiceStub.QueryResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateHealthcareFacilityResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreatePerformerResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateReportResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCareResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateHealthcareFacility;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreatePerformer;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateReport;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateSubjectOfCare;
 
 
 public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManagementClient {
-	private INTSIIE004ReportManagementImplProxy proxy;
+	private INTSIIE004ReportManagementImplServiceStub proxy;
 	private DADLManager dadlManager;
 	private ReferenceModelManager referenceModelManager;
 	
@@ -36,10 +42,15 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 		this(null);
 	}
 	public WSIntSIIE004ReportManagementClient(String endpoint) {
+		try {
 		if(endpoint==null) {
-			this.proxy=new INTSIIE004ReportManagementImplProxy();
+			this.proxy=new INTSIIE004ReportManagementImplServiceStub();
 		} else {
-			this.proxy=new INTSIIE004ReportManagementImplProxy(endpoint);
+			this.proxy=new INTSIIE004ReportManagementImplServiceStub(endpoint);
+		}
+		} catch(Exception  e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
 		this.dadlManager=new OpenEHRDADLManager();
 		this.referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
@@ -57,7 +68,13 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 	public HealthcareFacility createHealthcareFacility(String requestId) throws RejectException {
 		// TODO Auto-generated method stub
 		try {
-			ReturnValueCreateHealthcareFacility res=proxy.createHealthcareFacility(requestId);
+			WsReturnValueCreateHealthcareFacility res;
+			INTSIIE004ReportManagementImplServiceStub.CreateHealthcareFacility par= new INTSIIE004ReportManagementImplServiceStub.CreateHealthcareFacility();
+			par.setArg0(requestId);
+			INTSIIE004ReportManagementImplServiceStub.CreateHealthcareFacilityE pare= new INTSIIE004ReportManagementImplServiceStub.CreateHealthcareFacilityE();
+			pare.setCreateHealthcareFacility(par);
+			CreateHealthcareFacilityResponseE response=proxy.createHealthcareFacility(pare);
+			res=response.getCreateHealthcareFacilityResponse().get_return();
 			if(res.getReasonCode()!=null) {
 				throw new RejectException(requestId,CSReason.valueOf(res.getReasonCode()));
 			}
@@ -74,11 +91,17 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 	@Override
 	public EHRExtract createSubjectOfCare(String requestId) throws RejectException {
 		try {
-			ReturnValueCreateSubjectOfCare res=proxy.createSubjectOfCare(requestId);
+			WsReturnValueCreateSubjectOfCare res;
+			INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCare par= new INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCare();
+			par.setArg0(requestId);
+			INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCareE pare= new INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCareE();
+			pare.setCreateSubjectOfCare(par);
+			CreateSubjectOfCareResponseE response=proxy.createSubjectOfCare(pare);
+			res=response.getCreateSubjectOfCareResponse().get_return();
 			if(res.getReasonCode()!=null) {
 				throw new RejectException(requestId,CSReason.valueOf(res.getReasonCode()));
 			}
-			return bindFromDADL(res.getSerialized(),EHRExtract.class);
+			return bindFromDADL(res.getSerialized(),EHRExtract.class);			
 		}catch(RemoteException e) {
 			e.getCause().printStackTrace();
 			throw new RejectException(requestId,CSReason.REAS02);
@@ -91,7 +114,13 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 	@Override
 	public Performer createPerformer(String requestId) throws RejectException {
 		try {
-			ReturnValueCreatePerformer res=proxy.createPerformer(requestId);
+			WsReturnValueCreatePerformer res;
+			INTSIIE004ReportManagementImplServiceStub.CreatePerformer par= new INTSIIE004ReportManagementImplServiceStub.CreatePerformer();
+			par.setArg0(requestId);
+			INTSIIE004ReportManagementImplServiceStub.CreatePerformerE pare= new INTSIIE004ReportManagementImplServiceStub.CreatePerformerE();
+			pare.setCreatePerformer(par);
+			CreatePerformerResponseE response=proxy.createPerformer(pare);
+			res=response.getCreatePerformerResponse().get_return();			
 			if(res.getReasonCode()!=null) {
 				throw new RejectException(requestId,CSReason.valueOf(res.getReasonCode()));
 			}
@@ -111,7 +140,20 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 			String textTranscription, CDCV reportStatus, II rootArchetypeId)
 			throws RejectException {
 		try {
-			ReturnValueCreateReport res=proxy.createReport(requestId, serializeFromReferenceModel(subjectOfCareId), serializeFromReferenceModel(composerId), audioData, textTranscription, serializeFromReferenceModel(reportStatus), serializeFromReferenceModel(rootArchetypeId));
+			WsReturnValueCreateReport res;
+			INTSIIE004ReportManagementImplServiceStub.CreateReport par= new INTSIIE004ReportManagementImplServiceStub.CreateReport();
+			par.setArg0(requestId);
+			par.setArg1(serializeFromReferenceModel(subjectOfCareId));
+			par.setArg2(serializeFromReferenceModel(composerId));
+			par.setArg3(audioData);
+			par.setArg4(textTranscription);
+			par.setArg5(serializeFromReferenceModel(reportStatus));
+			par.setArg6(serializeFromReferenceModel(rootArchetypeId));
+ 
+			INTSIIE004ReportManagementImplServiceStub.CreateReportE pare= new INTSIIE004ReportManagementImplServiceStub.CreateReportE();
+			pare.setCreateReport(par);
+			CreateReportResponseE response=proxy.createReport(pare);
+			res=response.getCreateReportResponse().get_return();			
 			if(res.getReasonCode()!=null) {
 				throw new RejectException(requestId,CSReason.valueOf(res.getReasonCode()));
 			}

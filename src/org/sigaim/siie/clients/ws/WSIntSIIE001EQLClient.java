@@ -17,7 +17,6 @@ import org.sigaim.siie.clients.IntSIIE001EQLClient;
 import org.sigaim.siie.clients.IntSIIEReportSummary;
 import org.sigaim.siie.dadl.DADLManager;
 import org.sigaim.siie.dadl.OpenEHRDADLManager;
-import org.sigaim.siie.interfaces.eql.ReturnValueEQL;
 import org.sigaim.siie.iso13606.rm.AuditInfo;
 import org.sigaim.siie.iso13606.rm.Cluster;
 import org.sigaim.siie.iso13606.rm.Composition;
@@ -35,10 +34,12 @@ import org.sigaim.siie.rm.exceptions.RejectException;
 import org.sigaim.siie.seql.model.SEQLException;
 import org.sigaim.siie.seql.model.SEQLResultSet;
 import org.sigaim.siie.seql.model.SEQLSelectCondition;
-import org.sigaim.siie.ws.INTSIIE001EQLImplProxy;
+import org.sigaim.siie.ws2.INTSIIE001EQLImplServiceStub;
+import org.sigaim.siie.ws2.INTSIIE001EQLImplServiceStub.QueryResponseE;
+import org.sigaim.siie.ws2.INTSIIE001EQLImplServiceStub.WsReturnValueEQL;
 
 public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
-	private INTSIIE001EQLImplProxy proxy;
+	private INTSIIE001EQLImplServiceStub proxy;
 	private DADLManager dadlManager;
 	private ReferenceModelManager referenceModelManager;
 	
@@ -46,10 +47,15 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		this(null);
 	}
 	public WSIntSIIE001EQLClient(String endpoint) {
-		if(endpoint==null) {
-			this.proxy=new INTSIIE001EQLImplProxy();
-		} else {
-			this.proxy=new INTSIIE001EQLImplProxy(endpoint);
+		try {
+			if(endpoint==null) {
+				this.proxy=new INTSIIE001EQLImplServiceStub();
+			} else {
+				this.proxy=new INTSIIE001EQLImplServiceStub(endpoint);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
 		this.dadlManager=new OpenEHRDADLManager();
 		this.referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
@@ -80,9 +86,15 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		return rs;
 	}
 	public org.sigaim.siie.seql.model.SEQLResultSet query(String requestId, String eqlQuery) throws RejectException {
-		ReturnValueEQL ret;
+		WsReturnValueEQL ret;
 		try {
-			ret=proxy.query(requestId, eqlQuery);
+			INTSIIE001EQLImplServiceStub.Query query= new INTSIIE001EQLImplServiceStub.Query();
+			query.setArg0(requestId);
+			query.setArg1(eqlQuery);
+			INTSIIE001EQLImplServiceStub.QueryE querye= new INTSIIE001EQLImplServiceStub.QueryE();
+			querye.setQuery(query);
+			QueryResponseE response=proxy.query(querye);
+			ret=response.getQueryResponse().get_return();
 			if(ret.getReasonCode()!=null) {
 				throw new RejectException(requestId,CSReason.valueOf(ret.getReasonCode()));
 			}
@@ -211,7 +223,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	public Cluster getConceptInformationForReportId(II reportId) throws RejectException  {
 		try {
 			Cluster ret=null;
-			SEQLResultSet rs=this.query("", "SELECT e/items[at0008] WITH DESCENDANTS FROM EHR CONTAINS COMPOSITION c CONTAINS ENTRY e[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension="+reportId.getExtension()+";");
+			SEQLResultSet rs=this.query("", "SELECT e/items[at0008] WITH DESCENDANTS FROM EHR CONTAINS COMPOSITION c CONTAINS ENTRY e[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension=\""+reportId.getExtension()+"\";");
 			while(rs.nextRow()){
 				ContentObject serializedCluster=rs.getColumn(0);
 				ret=(Cluster)this.referenceModelManager.bind(serializedCluster);
@@ -228,7 +240,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	//FIXME: should return II of user
 	public boolean getUserExists(long userId) throws RejectException {
 		try {
-			SEQLResultSet rs = this.query("getUserExists", "SELECT p/identifier FROM EHR SYSTEM e CONTAINS PERFORMER p WHERE p/identifier/extension="+userId+";");
+			SEQLResultSet rs = this.query("getUserExists", "SELECT p/identifier FROM EHR SYSTEM e CONTAINS PERFORMER p WHERE p/identifier/extension=\""+userId+"\";");
 			try {
 				if(rs.nextRow())
 					//try to bind and if error no user returned
@@ -275,7 +287,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			//SELECT r/items[at0002]/parts[at0003] FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1];
 			SEQLResultSet rs = this.query("","SELECT  r/items[at0002]/parts[at0003], r/items[at0002]/parts[at0004], r/items[at0002]/parts[at0005], r/items[at0002]/parts[at0006] "
 					+ "FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1] "
-					+ "WHERE c/rc_id/extension="+reportId+";");
+					+ "WHERE c/rc_id/extension=\""+reportId+"\";");
 			if(rs.nextRow()) {
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(0)));//Element bias 
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(1)));//Element unbias
@@ -290,7 +302,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 	@Override
 	public II getEHRIdFromSubject(long subjectId) throws RejectException {
 		try {
-			SEQLResultSet rs=this.query("", "SELECT e/ehr_id FROM EHR e WHERE e/subject_of_care/extension="+subjectId+";");
+			SEQLResultSet rs=this.query("", "SELECT e/ehr_id FROM EHR e WHERE e/subject_of_care/extension=\""+subjectId+"\";");
 			if(rs.nextRow()){
 				return (II)this.referenceModelManager.bind(rs.getColumn(0));
 			}		
