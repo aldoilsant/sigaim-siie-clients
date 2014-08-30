@@ -43,9 +43,7 @@ public class TestMain {
 			composer.setPerformer(newPerformer.getIdentifier());
 			II rootArchetypeId= new II();
 			rootArchetypeId.setRoot("CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1");
-			CDCV reportStatus=new CDCV();
-			reportStatus.setCode("RSTA02");
-			Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "", "some text", reportStatus, rootArchetypeId);
+			Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "some text", true, rootArchetypeId);
 			System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 			SEQLResultSet rs=eqlClient.query("1", "SELECT c FROM EHR CONTAINS COMPOSITION c WHERE c/rc_id/extension="+newReport.getRcId().getExtension()+";");
 			int nrow=0;

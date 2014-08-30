@@ -18,6 +18,8 @@ public interface IntSIIE001EQLClient {
 	List<SubjectOfCare> getAllSubjectsOfCare() throws RejectException;
 	List<Performer> getAllPerformers() throws RejectException;
 	List<IntSIIEReportSummary> getAllReportSummaries() throws RejectException;
+	public List<IntSIIEReportSummary> getAllReportSummariesForVersionSet(II versionSet)
+			throws RejectException;
 	Cluster getConceptInformationForReportId(II reportId) throws RejectException;
 	boolean getUserExists(long userId) throws RejectException;
 	List<Element> getReportSoip(long reportId) throws RejectException;

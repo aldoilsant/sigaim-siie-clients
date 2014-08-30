@@ -281,6 +281,31 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		return rtn;
 	}
 	@Override
+	public List<IntSIIEReportSummary> getAllReportSummariesForVersionSet(II versionSet)
+			throws RejectException {
+		ArrayList<IntSIIEReportSummary> rtn = new ArrayList<IntSIIEReportSummary>();
+		try {
+			//SEQLResultSet rs = this.query("csig", "SELECT e/ehr_id, e/subject_of_care,  e/time_created,  c/rc_id, c/audit_info/time_committed, c/composer/performer, c/composer/healthcare_facility FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1];");
+			SEQLResultSet rs = this.query("", "SELECT e,  c, c/committal, c/composer FROM EHR e CONTAINS ALL VERSIONS OF COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1]; WHERE c/committal/version_set_id/extension=\""+versionSet.getExtension()+"\";");
+			while(rs.nextRow()) {
+				//Columna 0 bind a EHRExtract
+				//Columna 1 bind a Composition
+				//Columna 2 bind a AuditInfo
+				//Columna 3 bind a FunctionalRole 
+				IntSIIEReportSummary r = new WSIntSIIEReportSummary(
+						(EHRExtract)this.referenceModelManager.bind(rs.getColumn(0)),
+						(Composition)this.referenceModelManager.bind(rs.getColumn(1)),
+						(AuditInfo)this.referenceModelManager.bind(rs.getColumn(2)),
+						(FunctionalRole)this.referenceModelManager.bind(rs.getColumn(3))
+						);
+				rtn.add(r);
+			}
+		} catch(Exception e) {
+			throw new RejectException(e.getMessage(),CSReason.REAS02);
+		}
+		return rtn;
+	}
+	@Override
 	public List<Element> getReportSoip(long reportId) throws RejectException {
 		ArrayList<Element> rtn = new ArrayList<Element>();
 		try {

@@ -6,8 +6,9 @@ import java.rmi.RemoteException;
 import org.openehr.am.parser.ContentObject;
 import org.sigaim.siie.clients.IntSIIE004ReportManagementClient;
 import org.sigaim.siie.dadl.DADLManager;
-import org.sigaim.siie.dadl.OpenEHRDADLManager;
+import org.sigaim.siie.dadl.OpenEHRDADLManager; 
 import org.sigaim.siie.iso13606.rm.CDCV;
+import org.sigaim.siie.iso13606.rm.Cluster;
 import org.sigaim.siie.iso13606.rm.Composition;
 import org.sigaim.siie.iso13606.rm.EHRExtract;
 import org.sigaim.siie.iso13606.rm.FunctionalRole;
@@ -27,10 +28,12 @@ import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateHealt
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreatePerformerResponseE;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateReportResponseE;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.CreateSubjectOfCareResponseE;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.UpdateReportResponseE;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateHealthcareFacility;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreatePerformer;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateReport;
 import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueCreateSubjectOfCare;
+import org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.WsReturnValueUpdateReport;
 
 
 public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManagementClient {
@@ -133,11 +136,56 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 			throw new RejectException(requestId,CSReason.REAS02);
 		}
 	}
+	public Composition updateReport(
+			String requestId,
+			II ehrId, //the id of the previous version
+			II previousVersionId, 
+			FunctionalRole composerId,
+			String textTranscription,
+			boolean dictated,
+			boolean signed,
+			boolean confirmed,
+			II rootArchetypeId,
+			Cluster concepts
+			) throws RejectException {
+		try {
+			WsReturnValueUpdateReport res;
+			INTSIIE004ReportManagementImplServiceStub.UpdateReport par= new INTSIIE004ReportManagementImplServiceStub.UpdateReport();
+			par.setArg0(requestId);
+			par.setArg1(serializeFromReferenceModel(ehrId));
+			par.setArg2(serializeFromReferenceModel(previousVersionId));
+			par.setArg3(serializeFromReferenceModel(composerId));
+			par.setArg4(textTranscription);
+			par.setArg5(dictated);
+			par.setArg6(signed);
+			par.setArg7(confirmed);
+			par.setArg8(serializeFromReferenceModel(rootArchetypeId));
+			if(concepts!=null) {
+				par.setArg9(serializeFromReferenceModel(concepts));
+			} else {
+				par.setArg9(null);
+			}
 
+			INTSIIE004ReportManagementImplServiceStub.UpdateReportE pare= new INTSIIE004ReportManagementImplServiceStub.UpdateReportE();
+			pare.setUpdateReport(par);
+			UpdateReportResponseE response=proxy.updateReport(pare);
+			res=response.getUpdateReportResponse().get_return();			
+			if(res.getReasonCode()!=null) {
+				throw new RejectException(requestId,CSReason.valueOf(res.getReasonCode()));
+			}
+			return bindFromDADL(res.getSerialized(),Composition.class);
+		} catch(RemoteException e) {
+			e.getCause().printStackTrace();
+			throw new RejectException(requestId,CSReason.REAS02);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RejectException(requestId,CSReason.REAS02);
+		}
+	}
 	@Override
 	public Composition createReport(String requestId, II subjectOfCareId,
-			FunctionalRole composerId, String audioData,
-			String textTranscription, CDCV reportStatus, II rootArchetypeId)
+			FunctionalRole composerId, 
+			String textTranscription, boolean dictated, II rootArchetypeId)
 			throws RejectException {
 		try {
 			WsReturnValueCreateReport res;
@@ -145,10 +193,9 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 			par.setArg0(requestId);
 			par.setArg1(serializeFromReferenceModel(subjectOfCareId));
 			par.setArg2(serializeFromReferenceModel(composerId));
-			par.setArg3(audioData);
-			par.setArg4(textTranscription);
-			par.setArg5(serializeFromReferenceModel(reportStatus));
-			par.setArg6(serializeFromReferenceModel(rootArchetypeId));
+			par.setArg3(textTranscription);
+			par.setArg4(dictated);
+			par.setArg5(serializeFromReferenceModel(rootArchetypeId));
  
 			INTSIIE004ReportManagementImplServiceStub.CreateReportE pare= new INTSIIE004ReportManagementImplServiceStub.CreateReportE();
 			pare.setCreateReport(par);

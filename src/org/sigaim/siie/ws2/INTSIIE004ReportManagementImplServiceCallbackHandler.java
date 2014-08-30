@@ -77,6 +77,22 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for updateReport method
+            * override this method for handling normal response from updateReport operation
+            */
+           public void receiveResultupdateReport(
+                    org.sigaim.siie.ws2.INTSIIE004ReportManagementImplServiceStub.UpdateReportResponseE result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from updateReport operation
+           */
+            public void receiveErrorupdateReport(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for createHealthcareFacility method
             * override this method for handling normal response from createHealthcareFacility operation
             */

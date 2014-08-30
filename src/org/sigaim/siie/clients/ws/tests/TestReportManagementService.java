@@ -42,9 +42,11 @@ public class TestReportManagementService {
 		composer.setPerformer(newPerformer.getIdentifier());
 		II rootArchetypeId= new II();
 		rootArchetypeId.setRoot("CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1");
-		CDCV reportStatus=new CDCV();
-		reportStatus.setCode("RSTA02");
-		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "", "some text", reportStatus, rootArchetypeId);
+		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "some text", true, rootArchetypeId);
 		System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
+		//Update the report
+		newReport=client.updateReport("5", newEHR.getEhrId(), newReport.getRcId(), composer, "some text", true, true, true, rootArchetypeId, null);
+		System.out.println("Updated report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
+
 	}
 }

@@ -48,14 +48,15 @@ public class TestSEQLWebService {
 		System.out.println("Total healtchare facilities: "+hfs.size());*/
 
 		II reportId=new II();
-		reportId.setExtension("6");
+		//Note that if we update a report, the original id dissapears from the latest versions
+		reportId.setExtension("1194");
 		Cluster concepts=eqlClient.getConceptInformationForReportId(reportId);
 		System.out.println("Cluster: "+concepts);
 		for(Item i : concepts.getParts()) {
 			assert(i instanceof Cluster);
 			System.out.println("=======");
 			Cluster conceptCluster=(Cluster)i;
-			for(Item ii : conceptCluster.getParts()) { //Colletion is ordered, so you can just index when building
+			for(Item ii : conceptCluster.getParts()) { //Collection is ordered, so you can just index when building
 				assert(ii instanceof Element);
 				Element conceptPropertyElement=(Element)ii;
 				System.out.print(conceptPropertyElement.getName().getDisplayName().getValue()+": ");
