@@ -42,7 +42,7 @@ public class TestSEQLWebService {
 	@Test
 	public void test() throws Exception {
 		OpenEHRDADLManager manager=new OpenEHRDADLManager();
-		WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient();
+		WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient("https://localhost:8443/SIIEWS3/services/INTSIIE001EQLImplService");
 		/*List<HealthcareFacility> hfs=eqlClient.getAllHealthcareFacilities();
 
 		System.out.println("Total healtchare facilities: "+hfs.size());*/

@@ -1,10 +1,14 @@
 package org.sigaim.siie.manager;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import org.openehr.am.parser.ContentObject;
 import org.sigaim.siie.clients.ws.WSIntSIIE001EQLClient;
@@ -38,8 +42,8 @@ public class Main {
 	private static String readFile(String path, Charset encoding) 
 			  throws IOException 
 			{
-			  byte[] encoded = Files.readAllBytes(Paths.get(path));
-			  return new String(encoded, encoding);
+			  String content = new Scanner(new File(path),encoding.name()).useDelimiter("\\A").next();
+			  return content;
 			}
 	public static void main(String[] args) throws Exception {
 		DADLManager  dadlManager=new OpenEHRDADLManager();
@@ -88,7 +92,8 @@ public class Main {
     		System.out.println(res.getIdentifier().getRoot()+"/"+res.getIdentifier().getExtension());
     	} else if(operation.equals("create_report")) {
     		if(args.length!=7) {
-    			System.err.println("Invalid number of arguments for create_report, expected 7, found"+args.length);
+    			System.err.println("Invalid number of arguments for create_report, expected 7, found "+args.length);
+    			return; 
     		}
     		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient(endpoint);
     		II ehrId=stringToII(args[2]);
@@ -108,7 +113,8 @@ public class Main {
     	}  else if(operation.equals("update_report")) {
     		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient(endpoint);
     		if(args.length!=11) {
-    			System.err.println("Invalid number of arguments for update_report, expected 11, found"+args.length);
+    			System.err.println("Invalid number of arguments for update_report, expected 11, found "+args.length);
+    			return;
     		}
     		II ehrId=stringToII(args[2]);
     		II previousVersionId=stringToII(args[3]);
