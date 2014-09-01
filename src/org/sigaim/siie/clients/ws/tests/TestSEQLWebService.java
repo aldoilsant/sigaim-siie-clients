@@ -42,14 +42,14 @@ public class TestSEQLWebService {
 	@Test
 	public void test() throws Exception {
 		OpenEHRDADLManager manager=new OpenEHRDADLManager();
-		WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient("https://localhost:8443/SIIEWS3/services/INTSIIE001EQLImplService");
-		/*List<HealthcareFacility> hfs=eqlClient.getAllHealthcareFacilities();
+		WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient("http://localhost:8080/SIIEWS3/services/INTSIIE001EQLImplService");
+		List<HealthcareFacility> hfs=eqlClient.getAllHealthcareFacilities();
 
-		System.out.println("Total healtchare facilities: "+hfs.size());*/
+		System.out.println("Total healtchare facilities: "+hfs.size());
 
 		II reportId=new II();
 		//Note that if we update a report, the original id dissapears from the latest versions
-		reportId.setExtension("1194");
+		reportId.setExtension("242");
 		Cluster concepts=eqlClient.getConceptInformationForReportId(reportId);
 		System.out.println("Cluster: "+concepts);
 		for(Item i : concepts.getParts()) {
