@@ -30,7 +30,7 @@ public class TestReportManagementService {
 
 	@Test
 	public void test() throws Exception {
-		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient();
+		WSIntSIIE004ReportManagementClient client=new WSIntSIIE004ReportManagementClient("http://sigaim.siie.cesga.es:8080/SIIEWS3/services/INTSIIE004ReportManagementImplService");
 		HealthcareFacility newFacility=client.createHealthcareFacility("1");
 		System.out.println("New facility: "+newFacility.getIdentifier().getRoot()+" "+newFacility.getIdentifier().getExtension());
 		EHRExtract newEHR=client.createSubjectOfCare("2");

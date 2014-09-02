@@ -63,6 +63,7 @@ public class WSIntSIIE003TerminologiesClient {
 			}
 			Map<CDCV,Set<CDCV>> fret=new HashMap<CDCV,Set<CDCV>>();
 			//Convert result to map
+			if(ret.getSynonyms().getEntry()!= null)
 			for(Entry_type0 entry : ret.getSynonyms().getEntry()) {
 				HashSet<CDCV> temp=new HashSet<CDCV>();
 				for(String sconcept: entry.getValue().getItem()) {

@@ -317,7 +317,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(0)));//Element bias 
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(1)));//Element unbias
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(2)));//Element impr
-				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(0)));//Element plan
+				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(3)));//Element plan
 			}			
 		} catch(Exception e) {
 			throw new RejectException(e.getMessage(), CSReason.REAS02);
