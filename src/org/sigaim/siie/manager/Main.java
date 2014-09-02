@@ -8,13 +8,20 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.openehr.am.parser.ContentObject;
 import org.sigaim.siie.clients.ws.WSIntSIIE001EQLClient;
+import org.sigaim.siie.clients.ws.WSIntSIIE003TerminologiesClient;
 import org.sigaim.siie.clients.ws.WSIntSIIE004ReportManagementClient;
 import org.sigaim.siie.dadl.DADLManager;
 import org.sigaim.siie.dadl.OpenEHRDADLManager;
+import org.sigaim.siie.iso13606.rm.CDCV;
 import org.sigaim.siie.iso13606.rm.Cluster;
 import org.sigaim.siie.iso13606.rm.Composition;
 import org.sigaim.siie.iso13606.rm.EHRExtract;
@@ -57,6 +64,7 @@ public class Main {
 			System.err.println("create_perfomer");
 			System.err.println("update_report ehr_id previous_version_id healthcare_facility_id perfomer_id dictated signed confirmed soip_file updated_concepts_file");
 			System.err.println("query <query_string>");
+			System.err.println("get_synonyms_for <concept_code> <terminology_code>");
 			return;
 		}
 		String endpoint=args[0];
@@ -134,6 +142,22 @@ public class Main {
     		rootArchetypeId.setRoot("CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1");
     		Composition newReport=client.updateReport("", ehrId, previousVersionId, composerRole, inputText, dictated, signed, confirmed, rootArchetypeId, (Cluster) referenceModelManager.bind(dadlManager.parseDADL(new ByteArrayInputStream(encodedConcepts.getBytes()))));
     		System.out.println(dadlManager.serialize(referenceModelManager.unbind(newReport), false));
+    	} else if(operation.equals("get_synonyms_for"))  {
+    		WSIntSIIE003TerminologiesClient client=new WSIntSIIE003TerminologiesClient(endpoint);
+    		List<String> concepts=new ArrayList<String>();
+    		CDCV concept= new CDCV();
+    		concept.setCode(args[2]);
+    		concept.setCodeSystemName(args[3]);
+    		concepts.add(dadlManager.serialize(referenceModelManager.unbind(concept),false));
+    		concepts.add(dadlManager.serialize(referenceModelManager.unbind(concept),false));	
+    		Map<CDCV,Set<CDCV>> synonyms=client.getSynonymsForConcepts("", concepts);
+    		for(Entry<CDCV,Set<CDCV>> entry : synonyms.entrySet()) {
+    			System.out.println("Synonyms for: "+entry.getKey().getCode());
+    			for(CDCV syn : entry.getValue()) {
+    				System.out.println(">>>"+syn.getCode()+ " ("+syn.getDisplayName().getValue()+")");
+
+    			}
+    		}
     	} else {
     		System.err.println("Uknown operation: "+operation);
     	}
