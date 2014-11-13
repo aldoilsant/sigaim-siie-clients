@@ -2,31 +2,42 @@ package org.sigaim.siie.clients.ws;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.openehr.am.parser.AttributeValue;
 import org.openehr.am.parser.ComplexObjectBlock;
 import org.openehr.am.parser.ContentObject;
 import org.openehr.am.parser.KeyedObject;
 import org.openehr.am.parser.MultipleAttributeObjectBlock;
+import org.openehr.am.parser.PrimitiveObjectBlock;
 import org.openehr.am.parser.SingleAttributeObjectBlock;
+import org.openehr.am.parser.StringValue;
 import org.sigaim.siie.clients.IntSIIE001EQLClient;
 import org.sigaim.siie.clients.IntSIIEReportSummary;
 import org.sigaim.siie.dadl.DADLManager;
 import org.sigaim.siie.dadl.OpenEHRDADLManager;
 import org.sigaim.siie.iso13606.rm.AuditInfo;
+import org.sigaim.siie.iso13606.rm.CDCV;
 import org.sigaim.siie.iso13606.rm.Cluster;
 import org.sigaim.siie.iso13606.rm.Composition;
 import org.sigaim.siie.iso13606.rm.EHRExtract;
 import org.sigaim.siie.iso13606.rm.Element;
+import org.sigaim.siie.iso13606.rm.ExtractCriteria;
 import org.sigaim.siie.iso13606.rm.FunctionalRole;
 import org.sigaim.siie.iso13606.rm.HealthcareFacility;
 import org.sigaim.siie.iso13606.rm.II;
+import org.sigaim.siie.iso13606.rm.IVLTS;
 import org.sigaim.siie.iso13606.rm.Performer;
 import org.sigaim.siie.iso13606.rm.SubjectOfCare;
+import org.sigaim.siie.iso13606.rm.TS;
 import org.sigaim.siie.rm.ReferenceModelManager;
 import org.sigaim.siie.rm.ReflectorReferenceModelManager;
 import org.sigaim.siie.rm.exceptions.CSReason;
@@ -339,5 +350,165 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			throw new RejectException("",CSReason.REAS02);
 		}
 	}
+	protected String getDateComparisonFromTS(TS time, boolean closed, boolean high) {
+		String operator=null;
+		if(closed && high) {
+			operator="<=";
+		} else if(closed && !high) {
+			operator=">=";
+		} else if(!closed && high) {
+			operator="<";
+		} else {
+			operator=">";
+		}
+		return operator + "'"+time.getValue()+"'";
+	}
+	
+	public ContentObject requestEhrExtract(
+			String requestId,  
+			II subjectOfCareId, //Mandatory
+			CDCV purpose, //Optional, purpose of the EHR extract, IGNORED
+			Set<II> rc_ids, //Explicits rc_ids for components to be included.
+			IVLTS time_period, //Date or time interval for data
+			int max_sensitivity, //Max_sensitivity, IGNORED
+			boolean all_versions, //Latest version oliny if false
+			boolean multimedia_included, //Include multimedia, IGNORED
+			Set<II> archetype_ids, //record components matching archetype ids
+			Set<CDCV> meanings //meaning attribute match
+			) throws RejectException{
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT MERGED AS m e,r FROM EHR e CONTAINS ");
+		if(all_versions) {
+			queryBuilder.append("ALL VERSIONS OF ");
+		}
+		queryBuilder.append("RECORD_COMPONENT r WHERE e/subject_of_care/extension=\"");
+		queryBuilder.append(subjectOfCareId.getExtension());
+		queryBuilder.append("\" AND e/subject_of_care/root=\"");
+		queryBuilder.append(subjectOfCareId.getRoot());
+		queryBuilder.append("\"");
+		boolean areRcIds=rc_ids != null && rc_ids.size()!=0;
+		boolean areArchetypeIds=archetype_ids != null && archetype_ids.size()!=0;
+		boolean areMeanings=meanings != null && meanings.size()!=0;
 
+		if(areRcIds) {
+			boolean nfirst=false;
+			queryBuilder.append(" AND (");
+			for(II id : rc_ids) {
+				if(nfirst) {
+					queryBuilder.append(" OR ");
+				}
+				nfirst=true;
+				queryBuilder.append(" (r/rc_id/root=\"");
+				queryBuilder.append(id.getRoot());
+				queryBuilder.append("\" ");
+				queryBuilder.append(" AND r/rc_id/extension=\"");
+				queryBuilder.append(id.getExtension());
+				queryBuilder.append("\")");
+			}
+			queryBuilder.append(" )  ");
+		}
+		if(areArchetypeIds) {
+			boolean nfirst=false;
+			queryBuilder.append(" AND (");
+			for(II id : archetype_ids) {
+				if(nfirst) {
+					queryBuilder.append(" OR ");
+				}
+				nfirst=true;
+				queryBuilder.append(" (r/archetype_id/root=\"");
+				queryBuilder.append(id.getRoot());
+				queryBuilder.append("\" ");
+				if(id.getExtension()!=null) {
+					queryBuilder.append("AND r/archetype_id/extension=\"");
+					queryBuilder.append(id.getExtension());
+					queryBuilder.append("\"");
+				}
+				queryBuilder.append(")");
+			}
+			queryBuilder.append(" )  ");
+		}
+		if(areMeanings) {
+			boolean nfirst=false;
+			queryBuilder.append(" AND (");
+			for(CDCV id : meanings) {
+				if(nfirst) {
+					queryBuilder.append(" OR ");
+				}
+				nfirst=true;
+				queryBuilder.append(" AND (r/meaning/code_system_name=\"");
+				queryBuilder.append(id.getCodeSystemName());
+				queryBuilder.append("\" ");
+				if(id.getCode()!=null) {
+					queryBuilder.append(" AND r/meaning/code=\"");
+					queryBuilder.append(id.getCode());
+					queryBuilder.append("\"");
+				}
+
+				queryBuilder.append(")");
+			}
+			queryBuilder.append(" )  ");
+		}
+		if(time_period!=null && (time_period.getHigh()!=null || time_period.getLow() != null) ) {
+			queryBuilder.append("HAVING ");
+			String time=null;
+			if(time_period.getHigh()!=null) {
+				time=this.getDateComparisonFromTS(time_period.getHigh(), time_period.isHighClosed(), true);
+				queryBuilder.append(" (m/reference_model_class_name!= \"Composition\" OR m/committal/time_committed");
+				queryBuilder.append(time);
+				queryBuilder.append(" ) ");
+			}
+			if(time_period.getLow()!=null) {
+				if(time!=null) {
+					queryBuilder.append(" AND ");
+				}
+				time=this.getDateComparisonFromTS(time_period.getLow(), time_period.isLowClosed(), false);
+				queryBuilder.append(" (m/reference_model_class_name!= \"Composition\" OR m/committal/time_committed");
+				queryBuilder.append(time);
+				queryBuilder.append(" ) ");
+			}
+		}
+		queryBuilder.append(";");
+		System.out.println("Query: "+queryBuilder);
+		SEQLResultSet rs=this.query(requestId, queryBuilder.toString());
+		System.out.println("Query complete: "+queryBuilder);
+		if(rs.getNumberOfRows()==0) {
+			return null;
+		} else {
+			try {
+				rs.nextRow();
+				ContentObject obj= rs.getColumn(0);
+				//Modify time_created and add criteria
+				GregorianCalendar gregorianCalendar = new GregorianCalendar();
+				DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+				XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+				SingleAttributeObjectBlock block=this.referenceModelManager.getSingleAttributeObjectBlockFromContentObject(obj);
+				AttributeValue timeCreatedAtt=null;
+				for(AttributeValue att : block.getAttributeValues()) {
+					if(att.getId().equals("time_created")) {
+						timeCreatedAtt=att;
+						break;
+					}
+				}
+				block.getAttributeValues().remove(timeCreatedAtt);
+				block.getAttributeValues().add(new AttributeValue("time_created",new PrimitiveObjectBlock(null,new StringValue(now.toString()),null,null,null,null)));
+				ExtractCriteria crit=new ExtractCriteria();
+				crit.setAllVersions(all_versions);
+				crit.setMaxSensitivity(BigInteger.valueOf(max_sensitivity));
+				crit.setMultimediaIncluded(multimedia_included);
+				crit.setTimePeriod(time_period);
+				if(archetype_ids!=null) {
+					crit.getArchetypeIds().addAll(archetype_ids);
+				}
+				SingleAttributeObjectBlock critBlock=this.referenceModelManager.getSingleAttributeObjectBlockFromContentObject(this.referenceModelManager.unbind(crit));
+				KeyedObject kCrit=new KeyedObject(new StringValue("1"),critBlock);
+				List<KeyedObject> kCritList=new ArrayList<KeyedObject>();
+				kCritList.add(kCrit);
+				MultipleAttributeObjectBlock mblock=new MultipleAttributeObjectBlock(null, kCritList);
+				block.getAttributeValues().add(new AttributeValue("criteria", mblock));
+				return obj;
+			} catch(Exception e) {
+				throw new RejectException(requestId, CSReason.REAS02);
+			}
+		}
+	} 
 }

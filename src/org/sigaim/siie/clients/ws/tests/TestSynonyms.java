@@ -33,17 +33,20 @@ public class TestSynonyms {
 
 	@Test
 	public void test() throws Exception {
-		WSIntSIIE003TerminologiesClient client=new WSIntSIIE003TerminologiesClient();
+		WSIntSIIE003TerminologiesClient client=new WSIntSIIE003TerminologiesClient("http://sigaim.siie.cesga.es:8080/SIIEWS3/services/INTSIIE003TerminologiesImplService/");
 		this.dadlManager=new OpenEHRDADLManager();
 		this.referenceModelManager=new ReflectorReferenceModelManager(this.dadlManager);
 		List<String> concepts=new ArrayList<String>();
 		CDCV concept= new CDCV();
 		concept.setCode("394715003");
 		concept.setCodeSystemName("SNOMED-CT");
+		concept.setCodeSystemVersion("20140430");
 		concepts.add(this.dadlManager.serialize(this.referenceModelManager.unbind(concept),false));
 		concept= new CDCV();
 		concept.setCode("S0000001");
 		concept.setCodeSystemName("SIGAIM");
+		concept.setCodeSystemVersion("2014");
+
 		concepts.add(this.dadlManager.serialize(this.referenceModelManager.unbind(concept),false));	
 		Map<CDCV,Set<CDCV>> synonyms=client.getSynonymsForConcepts("", concepts);
 		for(Entry<CDCV,Set<CDCV>> entry : synonyms.entrySet()) {

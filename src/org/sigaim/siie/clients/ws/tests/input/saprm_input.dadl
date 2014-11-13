@@ -1,0 +1,247 @@
+<
+    reference_model_class_name = 
+    <
+        "Cluster"
+    >
+    links = 
+    <
+        
+    >
+    parts = 
+    <
+        [1]=
+        <
+            reference_model_class_name = 
+            <
+                "Element"
+            >
+            links = 
+            <
+                
+            >
+            meaning = 
+            <
+                reference_model_class_name = 
+                <
+                    "CDCV"
+                >
+                code = 
+                <
+                    "at0003"
+                >
+                coding_rationale = 
+                <
+                    
+                >
+                translation = 
+                <
+                    
+                >
+                
+            >
+            policy_ids = 
+            <
+                
+            >
+            synthesised = 
+            <
+                false
+            >
+            value = 
+            <
+                reference_model_class_name = 
+                <
+                    "ST"
+                >
+                translation = 
+                <
+                    
+                >
+                value = 
+                <
+                    "Acude a urgencias.Refiere sensaciÛn distÈrmica de 3 dÌas evoluciÛn sin fiebre termometrada.
+Molestias farÌngeas con tos improductiva."
+                >
+                
+            >
+            
+        >
+        [2]=
+        <
+            reference_model_class_name = 
+            <
+                "Element"
+            >
+            links = 
+            <
+                
+            >
+            meaning = 
+            <
+                reference_model_class_name = 
+                <
+                    "CDCV"
+                >
+                code = 
+                <
+                    "at0004"
+                >
+                coding_rationale = 
+                <
+                    
+                >
+                translation = 
+                <
+                    
+                >
+                
+            >
+            policy_ids = 
+            <
+                
+            >
+            synthesised = 
+            <
+                false
+            >
+            value = 
+            <
+                reference_model_class_name = 
+                <
+                    "ST"
+                >
+                translation = 
+                <
+                    
+                >
+                value = 
+                <
+                    "Buen estado general, consciente, orientado y colaborador, eupneico.Sin signos de distrÈs respiratorio.No exantemas ni petequias.Bien hidratado y bien perfundido.Afebril 36.3 grados.OtorrinolaringologÌa.Hiperemia farÌngea sin evidencia de exudados.AuscultaciÛn cardiorrespiratoria.Murmullo vesicular conservado sin estertores."
+                >
+                
+            >
+            
+        >
+        [3]=
+        <
+            reference_model_class_name = 
+            <
+                "Element"
+            >
+            links = 
+            <
+                
+            >
+            meaning = 
+            <
+                reference_model_class_name = 
+                <
+                    "CDCV"
+                >
+                code = 
+                <
+                    "at0005"
+                >
+                coding_rationale = 
+                <
+                    
+                >
+                translation = 
+                <
+                    
+                >
+                
+            >
+            policy_ids = 
+            <
+                
+            >
+            synthesised = 
+            <
+                false
+            >
+            value = 
+            <
+                reference_model_class_name = 
+                <
+                    "ST"
+                >
+                translation = 
+                <
+                    
+                >
+                value = 
+                <
+                    "SÌndrome catarral."
+                >
+                
+            >
+            
+        >
+        [4]=
+        <
+            reference_model_class_name = 
+            <
+                "Element"
+            >
+            links = 
+            <
+                
+            >
+            meaning = 
+            <
+                reference_model_class_name = 
+                <
+                    "CDCV"
+                >
+                code = 
+                <
+                    "at0006"
+                >
+                coding_rationale = 
+                <
+                    
+                >
+                translation = 
+                <
+                    
+                >
+                
+            >
+            policy_ids = 
+            <
+                
+            >
+            synthesised = 
+            <
+                false
+            >
+            value = 
+            <
+                reference_model_class_name = 
+                <
+                    "ST"
+                >
+                translation = 
+                <
+                    
+                >
+                value = 
+                <
+                    "HidrataciÛn.Ibuprofeno 600 maÒana tarde noche.Iniston antitusivo."
+                >
+                
+            >
+            
+        >
+        
+    >
+    policy_ids = 
+    <
+        
+    >
+    synthesised = 
+    <
+        false
+    >
+>

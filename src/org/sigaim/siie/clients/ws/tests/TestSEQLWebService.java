@@ -49,7 +49,7 @@ public class TestSEQLWebService {
 
 		II reportId=new II();
 		//Note that if we update a report, the original id dissapears from the latest versions
-		reportId.setExtension("2228");
+		reportId.setExtension("6");
 		Cluster concepts=eqlClient.getConceptInformationForReportId(reportId);
 		System.out.println("Cluster: "+concepts);
 		for(Item i : concepts.getParts()) {
@@ -72,7 +72,7 @@ public class TestSEQLWebService {
 				}
 			}
 		}
-		/*SEQLResultSet rs=eqlClient.query("1", "SELECT e/items[at0008]/parts[at0009] WITH DESCENDANTS FROM EHR CONTAINS COMPOSITION c CONTAINS ENTRY e[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension=6;");
+		/*SEQLResultSet rs=eqlClient.query("1", "SELECT e WITH DESCENDANTS,e/items[at0008]/parts[at0009] WITH DESCENDANTS FROM EHR CONTAINS COMPOSITION c CONTAINS ENTRY e[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension=\"815\";");
 		int nrow=0;
 		while(rs.nextRow()) {
 			int i;

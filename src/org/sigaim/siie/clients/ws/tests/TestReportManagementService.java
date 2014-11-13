@@ -2,11 +2,13 @@ package org.sigaim.siie.clients.ws.tests;
 
 import static org.junit.Assert.*;
 
+import java.io.InputStream;
 import java.util.Timer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openehr.am.parser.ContentObject;
 import org.sigaim.siie.clients.ws.WSIntSIIE004ReportManagementClient;
 import org.sigaim.siie.dadl.OpenEHRDADLManager;
 import org.sigaim.siie.iso13606.rm.CDCV;
@@ -42,11 +44,16 @@ public class TestReportManagementService {
 		composer.setPerformer(newPerformer.getIdentifier());
 		II rootArchetypeId= new II();
 		rootArchetypeId.setRoot("CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1");
-		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, "some text", true, rootArchetypeId);
+		OpenEHRDADLManager dadlManager=new OpenEHRDADLManager();
+		InputStream dadl=TestReportManagementService.class.getResourceAsStream("/org/sigaim/siie/clients/ws/tests/input/saprm_input.dadl");
+		ContentObject input=dadlManager.parseDADL(dadl);
+		String serialized=dadlManager.serialize(input,false);
+		
+		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, serialized, true, rootArchetypeId);
 		System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 		//Update the report
-		newReport=client.updateReport("5", newEHR.getEhrId(), newReport.getRcId(), composer, "some text", true, true, true, rootArchetypeId, null);
-		System.out.println("Updated report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
+		//newReport=client.updateReport("5", newEHR.getEhrId(), newReport.getRcId(), composer, serialized, true, true, true, rootArchetypeId, null);
+		//System.out.println("Updated report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 
 	}
 }
