@@ -86,9 +86,11 @@ public class TestISO136065 {
 		dadlManager=new OpenEHRDADLManager();
 		referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
 
+		//El subject of care se especifica con un II
 		II subjectOfCareId= new II();
 		subjectOfCareId.setRoot("org.sigaim");
 		subjectOfCareId.setExtension("4");
+		//Los rc_ids tambien
 		II testRcId=new II();
 		testRcId.setRoot("org.sigaim");
 		testRcId.setExtension("9");
@@ -98,18 +100,20 @@ public class TestISO136065 {
 		testRcId.setRoot("org.sigaim");
 		testRcId.setExtension("40");
 		rc_ids.add(testRcId);
-		
+		//Los archetype_id tambien
 		Set<II> archetypeIds= new HashSet<II> ();
 		testRcId=new II();
 		testRcId.setRoot("CEN-EN13606-SECTION.ImpresionMedica.v1");
 		archetypeIds.add(testRcId);
 		
+		//Meanings con CDV
 		Set<CDCV> meanings= new HashSet<CDCV>();
 		CDCV testCode=new CDCV();
 		testCode.setCode("at0009");
 		testCode.setCodeSystemName("CEN-EN13606-ENTRY.Informacion.v1");
 		meanings.add(testCode);
 		
+		//Y time_period con IVLTS
 		IVLTS time_period= new IVLTS();
 		TS low=new TS();
 		low.setValue("2014-08-21T04:50:29.923+02:00");
