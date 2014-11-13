@@ -66,8 +66,10 @@ public class WSIntSIIE003TerminologiesClient {
 			if(ret.getSynonyms().getEntry()!= null)
 			for(Entry_type0 entry : ret.getSynonyms().getEntry()) {
 				HashSet<CDCV> temp=new HashSet<CDCV>();
-				for(String sconcept: entry.getValue().getItem()) {
-					temp.add((CDCV)this.referenceModelManager.bind(this.dadlManager.parseDADL(new ByteArrayInputStream(sconcept.getBytes()))));
+				if(entry.getValue()!=null && entry.getValue().getItem()!=null) {
+					for(String sconcept: entry.getValue().getItem()) {
+						temp.add((CDCV)this.referenceModelManager.bind(this.dadlManager.parseDADL(new ByteArrayInputStream(sconcept.getBytes()))));
+					}
 				}
 				fret.put((CDCV)this.referenceModelManager.bind(this.dadlManager.parseDADL(new ByteArrayInputStream(entry.getKey().getBytes()))), temp);
 			}

@@ -46,8 +46,14 @@ public class TestSynonyms {
 		concept.setCode("S0000001");
 		concept.setCodeSystemName("SIGAIM");
 		concept.setCodeSystemVersion("2014");
-
 		concepts.add(this.dadlManager.serialize(this.referenceModelManager.unbind(concept),false));	
+		
+		concept= new CDCV();
+		concept.setCode("M0000250");
+		concept.setCodeSystemName("MED");
+		concept.setCodeSystemVersion("2014");
+		concepts.add(this.dadlManager.serialize(this.referenceModelManager.unbind(concept),false));			
+		
 		Map<CDCV,Set<CDCV>> synonyms=client.getSynonymsForConcepts("", concepts);
 		for(Entry<CDCV,Set<CDCV>> entry : synonyms.entrySet()) {
 			System.out.println("Synonyms for: "+entry.getKey().getCode());
