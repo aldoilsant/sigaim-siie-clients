@@ -17,6 +17,7 @@ import org.sigaim.siie.dadl.exceptions.SemanticDADLException;
 import org.sigaim.siie.iso13606.rm.CDCV;
 import org.sigaim.siie.iso13606.rm.II;
 import org.sigaim.siie.iso13606.rm.IVLTS;
+import org.sigaim.siie.iso13606.rm.SubjectOfCare;
 import org.sigaim.siie.iso13606.rm.TS;
 import org.sigaim.siie.rm.ReferenceModelManager;
 import org.sigaim.siie.rm.ReflectorReferenceModelManager;
@@ -86,6 +87,14 @@ public class TestISO136065 {
 		dadlManager=new OpenEHRDADLManager();
 		referenceModelManager=new ReflectorReferenceModelManager(dadlManager);
 
+		//Puedes usar este método para listar todos los pacientes:
+		
+		List<SubjectOfCare> subjectsOfCare=this.eqlClient.getAllSubjectsOfCare();
+		
+		for(SubjectOfCare subject : subjectsOfCare) {
+			//Esto es el II del subject of care, que se usa en la consulta
+			System.out.println(subject.getIdentifier().getRoot()+"/"+subject.getIdentifier().getExtension());
+		}
 		//El subject of care se especifica con un II
 		II subjectOfCareId= new II();
 		subjectOfCareId.setRoot("org.sigaim");
