@@ -435,7 +435,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 					queryBuilder.append(" OR ");
 				}
 				nfirst=true;
-				queryBuilder.append(" AND (r/meaning/code_system_name=\"");
+				queryBuilder.append(" (r/meaning/code_system_name=\"");
 				queryBuilder.append(id.getCodeSystemName());
 				queryBuilder.append("\" ");
 				if(id.getCode()!=null) {
