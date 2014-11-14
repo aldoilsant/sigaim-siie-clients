@@ -59,6 +59,11 @@ public class WSIntSIIEReportSummary implements IntSIIEReportSummary {
 	@Override
 	public II getHCFacility() {
 		return comp.getComposer().getHealthcareFacility();
-	}	
+	}
+	
+	@Override
+	public II getVersionSet(){
+		return comp.getCommittal().getVersionSetId();
+	}
 	
 }

@@ -297,7 +297,7 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 		ArrayList<IntSIIEReportSummary> rtn = new ArrayList<IntSIIEReportSummary>();
 		try {
 			//SEQLResultSet rs = this.query("csig", "SELECT e/ehr_id, e/subject_of_care,  e/time_created,  c/rc_id, c/audit_info/time_committed, c/composer/performer, c/composer/healthcare_facility FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1];");
-			SEQLResultSet rs = this.query("", "SELECT e,  c, c/committal, c/composer FROM EHR e CONTAINS ALL VERSIONS OF COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1]; WHERE c/committal/version_set_id/extension=\""+versionSet.getExtension()+"\";");
+			SEQLResultSet rs = this.query("", "SELECT e,  c, c/committal, c/composer FROM EHR e CONTAINS ALL VERSIONS OF COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] WHERE c/committal/version_set_id/extension=\""+versionSet.getExtension()+"\";");
 			while(rs.nextRow()) {
 				//Columna 0 bind a EHRExtract
 				//Columna 1 bind a Composition

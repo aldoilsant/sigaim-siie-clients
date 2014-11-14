@@ -19,7 +19,9 @@ public interface IntSIIE004ReportManagementClient {
 	public Performer createPerformer(String requestId) throws RejectException;
 	public Composition createReport(String requestId, II subjectOfCareId,
 			FunctionalRole composerId, 
-			String textTranscription, boolean dictated, II rootArchetypeId)
+			String textTranscription, 
+			boolean dictated, 
+			II rootArchetypeId)
 			throws RejectException;
 	public Composition updateReport(
 			String requestId,

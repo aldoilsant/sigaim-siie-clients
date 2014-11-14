@@ -19,4 +19,5 @@ public interface IntSIIEReportSummary {
 	XMLGregorianCalendar getCommisionDate();
 	II getPerformer();
 	II getHCFacility();
+	public II getVersionSet();
 }
