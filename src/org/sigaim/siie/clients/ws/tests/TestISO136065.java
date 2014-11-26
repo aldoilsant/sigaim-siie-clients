@@ -74,7 +74,7 @@ public class TestISO136065 {
 			exclusions.add("/reference_model_class_name");
 			exclusions.add("/name");
 			//La llamada que querrías tu sería:
-			Map<String,String> retMap=referenceModelManager.createPathMap(ret, true,true,exclusions);
+			Map<String,Object> retMap=referenceModelManager.createPathMap(ret, true,true,exclusions);
 			printMap(retMap);
 			System.out.println("Path Count: "+retMap.size());
 			return ret;
@@ -170,10 +170,10 @@ public class TestISO136065 {
 
 	}
 	
-	public void printMap(Map<String,String> map) {
+	public void printMap(Map<String,Object> map) {
 		for(String key : map.keySet()) {
-			String value=map.get(key);
-			System.out.println(key+" : "+value);
+			Object value=map.get(key);
+			System.out.println(key+" : "+value.toString());
 		}
 	}
 
