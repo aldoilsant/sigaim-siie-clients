@@ -183,7 +183,7 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 		}
 	}
 	@Override
-	public Composition createReport(String requestId, II subjectOfCareId,
+	public Composition createReport(String requestId, II ehrId,
 			FunctionalRole composerId, 
 			String textTranscription, boolean dictated, II rootArchetypeId)
 			throws RejectException {
@@ -191,7 +191,7 @@ public class WSIntSIIE004ReportManagementClient implements IntSIIE004ReportManag
 			WsReturnValueCreateReport res;
 			INTSIIE004ReportManagementImplServiceStub.CreateReport par= new INTSIIE004ReportManagementImplServiceStub.CreateReport();
 			par.setArg0(requestId);
-			par.setArg1(serializeFromReferenceModel(subjectOfCareId));
+			par.setArg1(serializeFromReferenceModel(ehrId));
 			par.setArg2(serializeFromReferenceModel(composerId));
 			par.setArg3(textTranscription);
 			par.setArg4(dictated);

@@ -52,8 +52,8 @@ public class TestReportManagementService {
 		Composition newReport=client.createReport("4", newEHR.getEhrId(), composer, serialized, true, rootArchetypeId);
 		System.out.println("New report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 		//Update the report
-		//newReport=client.updateReport("5", newEHR.getEhrId(), newReport.getRcId(), composer, serialized, true, true, true, rootArchetypeId, null);
-		//System.out.println("Updated report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
+		newReport=client.updateReport("5", newEHR.getEhrId(), newReport.getRcId(), composer, serialized, true, true, true, rootArchetypeId, null);
+		System.out.println("Updated report id: "+newReport.getRcId().getRoot()+" "+newReport.getRcId().getExtension());
 
 	}
 }

@@ -34,7 +34,7 @@ import org.sigaim.siie.rm.ReflectorReferenceModelManager;
 import org.sigaim.siie.seql.model.SEQLResultSet;
 
 public class Main {
-
+	private static final boolean use_print=false;
 	private static II stringToII(String input) {
 		String[] parts=input.split("/");
 		if(parts.length!=2) {
@@ -76,7 +76,7 @@ public class Main {
 			}
 			WSIntSIIE001EQLClient eqlClient=new WSIntSIIE001EQLClient(endpoint);
 			SEQLResultSet rs=eqlClient.query("", args[2]);
-    		if(rs!=null) {
+    		if(rs!=null && use_print) {
     			int nrow=0;
 				while(rs.nextRow()) {
 					for(int i=0;i<rs.getNumberOfColumns();i++) {
