@@ -68,13 +68,16 @@ public class TestISO136065 {
 			//Exclusions: borra automaticamente los paths que terminan con las cadenas dadas.
 			//(por lo que también habiamos hablado)
 			//Una vez tengas el mapa realmente ya puedes quitar tu los que quieras.
-			List<String> exclusions=new ArrayList<String>();
-			exclusions.add("archetype_id");
-			exclusions.add("meaning");
-			exclusions.add("/reference_model_class_name");
-			exclusions.add("/name");
+			List<String> startExclusions=new ArrayList<String>();
+			startExclusions.add("/all_compositions[at0000]/content[at0012]/");
+			startExclusions.add("/all_compositions/content[at0012]/");
+			List<String> endExclusions=new ArrayList<String>();
+			endExclusions.add("archetype_id");
+			endExclusions.add("meaning");
+			endExclusions.add("/reference_model_class_name");
+			endExclusions.add("/name");
 			//La llamada que querrías tu sería:
-			Map<String,Object> retMap=referenceModelManager.createPathMap(ret, true,true,exclusions);
+			Map<String,Object> retMap=referenceModelManager.createPathMap(ret, true,true,startExclusions,endExclusions);
 			printMap(retMap);
 			System.out.println("Path Count: "+retMap.size());
 			return ret;
