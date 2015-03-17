@@ -22,11 +22,19 @@ public interface IntSIIE001EQLClient {
 	List<SubjectOfCare> getAllSubjectsOfCare() throws RejectException;
 	List<Performer> getAllPerformers() throws RejectException;
 	List<IntSIIEReportSummary> getAllReportSummaries() throws RejectException;
-	public List<IntSIIEReportSummary> getAllReportSummariesForVersionSet(II versionSet)
+	List<IntSIIEReportSummary> getAllReportSummariesForVersionSet(II versionSet)
 			throws RejectException;
+	Cluster getConceptInformationForOldReportId(II reportId) throws RejectException;
 	Cluster getConceptInformationForReportId(II reportId) throws RejectException;
 	boolean getUserExists(long userId) throws RejectException;
 	List<Element> getReportSoip(long reportId) throws RejectException;
+	/**
+	 * Recovers SOIP from an non-last report version.
+	 * @param reportId report to get data from
+	 * @return 
+	 * @throws RejectException
+	 */
+	List<Element> getOldReportSoip(long reportId) throws RejectException;
 	II getEHRIdFromSubject(long subjectId) throws RejectException;
 	//ISO 13606-5 proxy method
 	public ContentObject requestEhrExtract(

@@ -43,7 +43,8 @@ public class WSIntSIIEReportSummary implements IntSIIEReportSummary {
 
 	@Override
 	public XMLGregorianCalendar getCreationDate() {
-		return ehr.getTimeCreated();
+		//return ehr.getTimeCreated();
+		return comp.getCommittal().getTimeCommitted();
 	}
 
 	@Override

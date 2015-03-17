@@ -239,7 +239,25 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 				ContentObject serializedCluster=rs.getColumn(0);
 				ret=(Cluster)this.referenceModelManager.bind(serializedCluster);
 				break;
-			}		
+			}	
+			return ret;
+		} catch(RejectException e) {
+			throw e;
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RejectException("",CSReason.REAS02);
+		}
+	}
+	@Override
+	public Cluster getConceptInformationForOldReportId(II reportId) throws RejectException {
+		try {
+			Cluster ret=null;
+			SEQLResultSet rs=this.query("", "SELECT e/items[at0008] WITH DESCENDANTS FROM EHR CONTAINS ALL VERSIONS OF COMPOSITION c CONTAINS ENTRY e[CEN-EN13606-ENTRY.Informacion.v1] WHERE c/rc_id/extension=\""+reportId.getExtension()+"\";");
+			while(rs.nextRow()){
+				ContentObject serializedCluster=rs.getColumn(0);
+				ret=(Cluster)this.referenceModelManager.bind(serializedCluster);
+				break;
+			}	
 			return ret;
 		} catch(RejectException e) {
 			throw e;
@@ -323,6 +341,25 @@ public class WSIntSIIE001EQLClient implements  IntSIIE001EQLClient {
 			//SELECT r/items[at0002]/parts[at0003] FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1];
 			SEQLResultSet rs = this.query("","SELECT  r/items[at0002]/parts[at0003], r/items[at0002]/parts[at0004], r/items[at0002]/parts[at0005], r/items[at0002]/parts[at0006] "
 					+ "FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1] "
+					+ "WHERE c/rc_id/extension=\""+reportId+"\";");
+			if(rs.nextRow()) {
+				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(0)));//Element bias 
+				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(1)));//Element unbias
+				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(2)));//Element impr
+				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(3)));//Element plan
+			}			
+		} catch(Exception e) {
+			throw new RejectException(e.getMessage(), CSReason.REAS02);
+		}
+		return rtn;
+	}
+	@Override
+	public List<Element> getOldReportSoip(long reportId) throws RejectException {
+		ArrayList<Element> rtn = new ArrayList<Element>();
+		try {
+			//SELECT r/items[at0002]/parts[at0003] FROM EHR e CONTAINS COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1];
+			SEQLResultSet rs = this.query("","SELECT  r/items[at0002]/parts[at0003], r/items[at0002]/parts[at0004], r/items[at0002]/parts[at0005], r/items[at0002]/parts[at0006] "
+					+ "FROM EHR e CONTAINS ALL VERSIONS OF COMPOSITION c[CEN-EN13606-COMPOSITION.InformeClinicoNotaSOIP.v1] CONTAINS ENTRY r[CEN-EN13606-ENTRY.Informacion.v1] "
 					+ "WHERE c/rc_id/extension=\""+reportId+"\";");
 			if(rs.nextRow()) {
 				rtn.add((Element)this.referenceModelManager.bind(rs.getColumn(0)));//Element bias 
